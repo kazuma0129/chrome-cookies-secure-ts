@@ -1,30 +1,29 @@
-# chrome-cookies-secure
+# chrome-cookies-secure-ts
 
-Extract encrypted Google Chrome cookies for a url on Mac OS X, Windows, or Linux
+Extract encrypted Google Chrome cookies for a url on Mac OS X, or Linux
 
 ## Installation
 
 ```
-npm install chrome-cookies-secure
+npm install @kazuma0129/chrome-cookies-secure
 ```
 
 ## API
 
-getCookies(url[,format],callback,profile)
----------------------------------
+## getCookies(url[,format],callback,profile)
 
 `url` should be a fully qualified url, e.g. `https://www.example.com/path`
 
 `format` is optional and can be one of the following values:
 
-format | description
------------- | -------------
-curl | [Netscape HTTP Cookie File](http://curl.haxx.se/docs/http-cookies.html) contents usable by curl and wget
-jar | cookie jar compatible with [request](https://www.npmjs.org/package/request)
-set-cookie | Array of Set-Cookie header values
-header | `cookie` header string, similar to what a browser would send
-puppeteer | an array of objects that can be loaded into puppeteer using the `setCookie(...)` method
-object | (default) Object where key is the cookie name and value is the cookie value. These are written in order so it's possible that duplicate cookie names will be overriden by later values
+| format     | description                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| curl       | [Netscape HTTP Cookie File](http://curl.haxx.se/docs/http-cookies.html) contents usable by curl and wget                                                                               |
+| jar        | cookie jar compatible with [request](https://www.npmjs.org/package/request)                                                                                                            |
+| set-cookie | Array of Set-Cookie header values                                                                                                                                                      |
+| header     | `cookie` header string, similar to what a browser would send                                                                                                                           |
+| puppeteer  | an array of objects that can be loaded into puppeteer using the `setCookie(...)` method                                                                                                |
+| object     | (default) Object where key is the cookie name and value is the cookie value. These are written in order so it's possible that duplicate cookie names will be overriden by later values |
 
 If `format` is not specified, `object` will be used as the format by default.
 
@@ -32,76 +31,82 @@ Cookie order tries to follow [RFC 6265 - Section 5.4, step 2](http://tools.ietf.
 
 ## Examples
 
-basic usage
------------
+## basic usage
 
 ```javascript
-const chrome = require('chrome-cookies-secure');
-chrome.getCookies('https://www.example.com/path/', function(err, cookies) {
-	console.log(cookies);
+const chrome = require("chrome-cookies-secure");
+chrome.getCookies("https://www.example.com/path/", function (err, cookies) {
+  console.log(cookies);
 });
 ```
 
-jar used with request
----------------------
+## jar used with request
 
 ```javascript
-const request = require('request');
-const chrome = require('chrome-cookies-secure');
+const request = require("request");
+const chrome = require("chrome-cookies-secure");
 
-chrome.getCookies('https://www.example.com/', 'jar', function(err, jar) {
-	request({url: 'https://www.example.com/', jar: jar}, function (err, response, body) {
-		console.log(body);
-	});
+chrome.getCookies("https://www.example.com/", "jar", function (err, jar) {
+  request(
+    { url: "https://www.example.com/", jar: jar },
+    function (err, response, body) {
+      console.log(body);
+    }
+  );
 });
-
 ```
 
-puppeteer with specific Chrome profile
----------------------
+## puppeteer with specific Chrome profile
 
 ```javascript
-const chrome = require('chrome-cookies-secure');
-const puppeteer = require('puppeteer');
+const chrome = require("chrome-cookies-secure");
+const puppeteer = require("puppeteer");
 
-const url = 'https://www.yourUrl.com/';
+const url = "https://www.yourUrl.com/";
 
 const getCookies = (callback) => {
-    chrome.getCookies(url, 'puppeteer', function(err, cookies) {
-        if (err) {
-            console.log(err, 'error');
-            return
-        }
-        console.log(cookies, 'cookies');
-        callback(cookies);
-    }, 'yourProfile') // e.g. 'Profile 2'
-}
+  chrome.getCookies(
+    url,
+    "puppeteer",
+    function (err, cookies) {
+      if (err) {
+        console.log(err, "error");
+        return;
+      }
+      console.log(cookies, "cookies");
+      callback(cookies);
+    },
+    "yourProfile"
+  ); // e.g. 'Profile 2'
+};
 
 getCookies(async (cookies) => {
-    const browser = await puppeteer.launch({ 
-        headless: false
-    });
-    const page = await browser.newPage();
+  const browser = await puppeteer.launch({
+    headless: false,
+  });
+  const page = await browser.newPage();
 
-    await page.setCookie(...cookies);
-    await page.goto(url);
-    await page.waitFor(1000);
-    browser.close();
+  await page.setCookie(...cookies);
+  await page.goto(url);
+  await page.waitFor(1000);
+  browser.close();
 });
-
 ```
 
-Calling using async/await
----------------------
+## Calling using async/await
 
 ```javascript
-const chrome = require('chrome-cookies-secure');
-const url = 'https://www.yourUrl.com/';
+const chrome = require("chrome-cookies-secure");
+const url = "https://www.yourUrl.com/";
 
 const myFunction = async () => {
-    const cookies = await chrome.getCookiesPromised(url, 'puppeteer', 'Profile 28')
-    // ..... Use the cookies
-}
+  const cookies = await chrome.getCookiesPromised(
+    url,
+    "puppeteer",
+    "Profile 28"
+  );
+  // ..... Use the cookies
+};
 ```
 
 ## Limitations
@@ -116,4 +121,4 @@ The SQLite database that Google Chrome stores its cookies is only persisted to e
 
 This software is free to use under the MIT license. See the [LICENSE file][] for license text and copyright information.
 
-[LICENSE file]: https://github.com/bertrandom/chrome-cookies-secure/blob/master/LICENSE.md
+[license file]: https://github.com/bertrandom/chrome-cookies-secure/blob/master/LICENSE.md
