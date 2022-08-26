@@ -1,6 +1,6 @@
 {
   "name": "@kazuma0129/chrome-cookies-secure",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Extract encrypted Google Chrome cookies for a url on a Mac or Linux",
   "keywords": [
     "google",
